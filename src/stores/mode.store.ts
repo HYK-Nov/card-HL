@@ -1,14 +1,14 @@
 import { create } from "zustand";
 
-type Store = {
+type ModeStore = {
   isEasyMode: boolean;
-  toggleEasyMode: (toggle: boolean) => void;
+  toggleEasyMode: () => void;
 };
 
-export const useModeStore = create<Store>()((set) => ({
+export const useModeStore = create<ModeStore>()((set) => ({
   isEasyMode: false,
-  toggleEasyMode: (toggle) =>
-    set(() => {
-      return { isEasyMode: toggle };
+  toggleEasyMode: () =>
+    set((state) => {
+      return { isEasyMode: !state.isEasyMode };
     }),
 }));

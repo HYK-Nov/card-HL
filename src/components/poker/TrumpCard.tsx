@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils.ts";
-import React from "react";
 
 const cardImages = import.meta.glob("@/assets/images/card/*.svg", {
   eager: true,
@@ -7,30 +6,32 @@ const cardImages = import.meta.glob("@/assets/images/card/*.svg", {
 }) as Record<string, string>;
 
 type Props = {
-  selected: boolean;
-  onClick: () => void;
   value: string;
-  isChanged: boolean;
+  selected?: boolean;
+  onClick?: () => void;
+  isChanged?: boolean;
+  isInteracting?: boolean;
 };
 
-const parsedCardImages: Record<string, string> = {};
+export const parsedCardImages: Record<string, string> = {};
 Object.entries(cardImages).forEach(([fullPath, url]) => {
   const fileName = fullPath.split("/").pop()?.replace(".svg", "") || "";
   parsedCardImages[fileName] = url;
 });
 
-export default React.memo(function TrumpCard({
+export default function TrumpCard({
   selected,
   onClick,
   value,
   isChanged,
+  isInteracting = true,
 }: Props) {
   return (
     <>
       <button
         disabled={isChanged}
         className={cn(
-          "group relative aspect-[63/88] overflow-hidden rounded-md bg-white shadow-xl transition",
+          "group relative aspect-[63/88] w-[128px] overflow-hidden rounded bg-white shadow-xl transition",
           selected ? "-translate-y-3" : "translate-y-0",
         )}
         onClick={onClick}
@@ -44,7 +45,7 @@ export default React.memo(function TrumpCard({
           className={cn(
             "absolute inset-0 rounded bg-slate-400/40 opacity-0 transition-opacity",
             selected && "opacity-100",
-            !isChanged && "group-hover:opacity-100",
+            !isChanged && isInteracting && "group-hover:opacity-100",
             isChanged && "cursor-default",
           )}
         />
@@ -59,4 +60,4 @@ export default React.memo(function TrumpCard({
       </button>
     </>
   );
-});
+}

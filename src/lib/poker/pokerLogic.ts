@@ -1,3 +1,5 @@
+import { THandRanking } from "@/types/pokerTypes.ts";
+
 const RANKS = [
   "2",
   "3",
@@ -14,7 +16,7 @@ const RANKS = [
   "A",
 ];
 const SUITS = ["C", "D", "H", "S"];
-const HAND_RANKINGS: { name: string; multiplier: number }[] = [
+const HAND_RANKINGS: THandRanking[] = [
   { name: "로열 스트레이트 플러시", multiplier: 100 },
   { name: "파이브카드", multiplier: 30 },
   { name: "스트레이트 플러시", multiplier: 15 },
@@ -31,7 +33,7 @@ const HAND_RANKINGS: { name: string; multiplier: number }[] = [
 // 카드 랜덤 셔플
 export const getRandomCards = (
   count: number = 5,
-  jokerProbability: number = 0.1, // 조커 등장 확률
+  jokerProbability: number = 1, // 조커 등장 확률
 ): string[] => {
   const normalDeck: string[] = [];
 
@@ -85,9 +87,7 @@ const parseHand = (hand: string[]) => {
 };
 
 // 족보 판별
-const evaluateHand = (
-  cards: ParsedCard[],
-): { name: string; multiplier: number } => {
+const evaluateHand = (cards: ParsedCard[]): THandRanking => {
   const suitsCount = new Map<string, number>();
   const ranksCount = new Map<string, number>();
 
@@ -114,14 +114,10 @@ const evaluateHand = (
     }
 
     // 특수 케이스 (A, 2, 3, 4, 5)
-    if (
+    return (
       unique.includes(14) &&
       [2, 3, 4, 5].every((value) => unique.includes(value))
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   })();
 
   //  같은 숫자(rank) 갯수 내림차순 정렬
@@ -166,7 +162,7 @@ const evaluateHand = (
 const getHandWithJoker = (
   normal: ParsedCard[],
   isEasyMode: boolean,
-): { name: string; multiplier: number } => {
+): THandRanking => {
   const allCards: ParsedCard[] = [];
   for (const suit of SUITS) {
     for (const rank of RANKS) {
@@ -180,9 +176,15 @@ const getHandWithJoker = (
     const testHand = [...normal, wild];
     const result = evaluateHand(testHand);
 
+    const resultIndex = HAND_RANKINGS.findIndex((h) => h.name === result.name);
+    const bestIndex = HAND_RANKINGS.findIndex((h) => h.name === best.name);
+
     if (result.name === "노페어" && isEasyMode) {
       best = HAND_RANKINGS[9];
-    } else if (result.multiplier > best.multiplier) {
+      continue;
+    }
+
+    if (resultIndex < bestIndex) {
       best = result;
     }
   }
@@ -193,7 +195,7 @@ const getHandWithJoker = (
 const getHandWithoutJoker = (
   normal: ParsedCard[],
   isEasyMode: boolean,
-): { name: string; multiplier: number } => {
+): THandRanking => {
   const ranksCount = new Map<string, number>();
   normal.forEach((card) => {
     ranksCount.set(card.rank, (ranksCount.get(card.rank) || 0) + 1);
@@ -212,7 +214,7 @@ const getHandWithoutJoker = (
 const getEZModeHand = (
   normal: ParsedCard[],
   hasJoker: boolean,
-): { name: string; multiplier: number } => {
+): THandRanking => {
   return hasJoker
     ? getHandWithJoker(normal, true)
     : getHandWithoutJoker(normal, true);
@@ -221,7 +223,7 @@ const getEZModeHand = (
 export const getBestHand = (
   cards: string[],
   isEasyMode: boolean,
-): { name: string; multiplier: number } => {
+): THandRanking => {
   const { normal, hasJoker } = parseHand(cards);
 
   if (isEasyMode) {
