@@ -39,6 +39,7 @@ export default function TrumpCard({
         <img
           src={parsedCardImages[value]}
           alt="TrumpCard"
+          draggable="false"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div

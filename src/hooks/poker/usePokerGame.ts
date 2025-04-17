@@ -1,5 +1,5 @@
-import { useModeStore } from "@/stores/mode.store.ts";
-import { useHandStore } from "@/stores/score.store.ts";
+import { useModeStore } from "@/stores/state.store.ts";
+import { useHandStore, useScoreStore } from "@/stores/score.store.ts";
 import { useEffect, useState } from "react";
 import { THandRanking } from "@/types/pokerTypes.ts";
 import { getBestHand, getRandomCards } from "@/lib/poker/pokerLogic.ts";
@@ -7,6 +7,7 @@ import { getBestHand, getRandomCards } from "@/lib/poker/pokerLogic.ts";
 export const usePokerGame = () => {
   const { isEasyMode } = useModeStore();
   const { setBestHand } = useHandStore();
+  const { setScore, decCoin, bet } = useScoreStore();
 
   const [deck, setDeck] = useState<string[]>([]);
   const [result, setResult] = useState<THandRanking>();
@@ -39,6 +40,7 @@ export const usePokerGame = () => {
     setDeck(getRandomCards());
     setIsChanged(false);
     setBestHand(null);
+    decCoin(1000);
   };
 
   useEffect(() => {
@@ -49,7 +51,12 @@ export const usePokerGame = () => {
     if (deck.length > 0) {
       const hand = getBestHand(deck, isEasyMode);
       setResult(hand);
-      if (isChanged) setBestHand(hand);
+      if (isChanged) {
+        setBestHand(hand);
+        if (!["노페어", "원페어"].includes(hand.name)) {
+          setScore(hand.multiplier * bet);
+        }
+      }
     }
   }, [deck]);
 

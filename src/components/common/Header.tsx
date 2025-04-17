@@ -1,8 +1,4 @@
-type Props = {
-  onRetry: () => void;
-};
-
-export default function Header({ onRetry }: Props) {
+export default function Header() {
   const handleOnClick = () => {
     window.location.reload();
     // onRetry();

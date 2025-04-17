@@ -1,15 +1,9 @@
-import { Label } from "@/components/ui/label.tsx";
-import { Switch } from "@/components/ui/switch.tsx";
-import { useModeStore } from "@/stores/mode.store.ts";
+import { usePhaseStore } from "@/stores/state.store.ts";
 
-type Props = {
-  onNext: () => void;
-};
-
-export default function StartScreen({ onNext }: Props) {
-  const { toggleEasyMode, isEasyMode } = useModeStore();
+export default function StartScreen() {
+  const { setPhase } = usePhaseStore();
   const handleNext = () => {
-    onNext();
+    setPhase("betting");
   };
 
   // TODO
@@ -34,12 +28,12 @@ export default function StartScreen({ onNext }: Props) {
         {/* 유틸 버튼 */}
         <div>
           <div className={"flex items-center space-x-2"}>
-            <Switch
+            {/*<Switch
               id={"easy-mode"}
               checked={isEasyMode}
               onCheckedChange={toggleEasyMode}
             />
-            <Label htmlFor={"easy-mode"}>이지 모드</Label>
+            <Label htmlFor={"easy-mode"}>이지 모드</Label>*/}
           </div>
         </div>
       </div>

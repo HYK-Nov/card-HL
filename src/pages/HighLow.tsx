@@ -1,51 +1,28 @@
-import { useEffect, useState } from "react";
-import { getRandomCards } from "@/lib/poker/pokerLogic.ts";
-import { getWinningCard } from "@/lib/highlow/highlowLogic.ts";
-import { useScoreStore } from "@/stores/score.store.ts";
 import TrumpCard from "@/components/poker/TrumpCard.tsx";
 import { cn } from "@/lib/utils.ts";
 import TrumpCardAnimation from "@/components/poker/TrumpCardAnimation.tsx";
+import { useHighLowGame } from "@/hooks/highlow/useHighLowGame.ts";
+import ActionButton from "@/components/highlow/ActionButton.tsx";
 
-type Props = {
-  onRetry: () => void;
-};
+export default function HighLow() {
+  const {
+    isResultVisible,
+    result,
+    count,
+    deck,
+    handleRetry,
+    handleGo,
+    handleStop,
+    handleHighLow,
+    handleEnd,
+    handleChangeBet,
+  } = useHighLowGame();
 
-export default function HighLow({ onRetry }: Props) {
-  const { incScore } = useScoreStore();
-  const [deck, setDeck] = useState<string[]>([]);
-  const [count, setCount] = useState(0);
-  const [result, setResult] = useState("0");
-  const [isResultVisible, setIsResultVisible] = useState(false);
-  const handleRetry = () => {
-    onRetry();
-  };
+  const secondCard = isResultVisible ? deck[1] : "ZZ";
 
-  const handleHighLow = (mode: "high" | "low") => {
-    if (deck.length > 0) {
-      const compareResult = getWinningCard(deck, mode);
-      setResult(compareResult);
-      setIsResultVisible(true);
-
-      if (compareResult === "win") {
-        incScore();
-        setCount((prev) => prev + 1);
-      } else if (compareResult === "lose") {
-        //   TODO
-      } else {
-        //   DRAW
-        //   TODO
-      }
-    }
-  };
-
-  useEffect(() => {
-    setDeck(getRandomCards(2, 0));
-  }, []);
-
-  // TODO
   return (
     <>
-      <div className="flex flex-col gap-4 py-3">
+      <div className="flex flex-col gap-[4rem] py-[1rem]">
         {/* 결과 출력 */}
         <div
           className={cn(
@@ -58,49 +35,22 @@ export default function HighLow({ onRetry }: Props) {
         </div>
 
         {/* 카드 */}
-        <div>
-          <div className="flex justify-center gap-[4rem] pb-5">
+        <div className={"flex flex-col gap-[3rem]"}>
+          <div className="flex justify-center gap-[4rem]">
             <TrumpCard value={deck[0]} isInteracting={false} />
-            <TrumpCardAnimation value={isResultVisible ? deck[1] : "ZZ"} />
+            <TrumpCardAnimation key={secondCard} value={secondCard} />
           </div>
           <div className={"grid grid-cols-2 gap-3"}>
-            {!isResultVisible ? (
-              <>
-                <button
-                  onClick={() => handleHighLow("high")}
-                  className={
-                    "text-background rounded bg-rose-500 py-1 text-xl hover:bg-rose-600"
-                  }
-                >
-                  하이
-                </button>
-                <button
-                  onClick={() => handleHighLow("low")}
-                  className={
-                    "text-background rounded bg-blue-500 py-1 text-xl hover:bg-blue-600"
-                  }
-                >
-                  로우
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  className={
-                    "bg-background rounded border-3 border-rose-500 py-1 text-xl text-rose-500 hover:bg-rose-100/50"
-                  }
-                >
-                  GO
-                </button>
-                <button
-                  className={
-                    "bg-background rounded border-3 border-blue-500 py-1 text-xl text-blue-500 hover:bg-blue-100/50"
-                  }
-                >
-                  STOP
-                </button>
-              </>
-            )}
+            <ActionButton
+              visible={isResultVisible}
+              result={result}
+              handleHighLow={handleHighLow}
+              handleGo={handleGo}
+              handleStop={handleStop}
+              handleRetry={handleRetry}
+              handleEnd={handleEnd}
+              handleChangeBet={handleChangeBet}
+            />
           </div>
         </div>
       </div>

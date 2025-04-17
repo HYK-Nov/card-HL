@@ -1,3 +1,9 @@
 export default function ResultScreen() {
-  return <></>;
+  return (
+    <>
+      <div className="flex flex-col">
+        <p>RESULT PHASE</p>
+      </div>
+    </>
+  );
 }

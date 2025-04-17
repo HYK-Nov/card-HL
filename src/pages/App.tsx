@@ -1,22 +1,32 @@
 import "../styles/App.css";
 import Poker from "@/pages/Poker.tsx";
-import HandRankings from "@/components/poker/HandRankings.tsx";
 import Header from "@/components/common/Header.tsx";
-import { useState } from "react";
+import { useEffect } from "react";
 import StartScreen from "@/pages/StartScreen.tsx";
 import HighLow from "@/pages/HighLow.tsx";
 import ScoreSection from "@/components/common/ScoreSection.tsx";
 import ResultScreen from "@/pages/ResultScreen.tsx";
-
-type GamePhase = "start" | "poker" | "highlow" | "result";
+import { usePhaseStore } from "@/stores/state.store.ts";
+import { useHandStore, useScoreStore } from "@/stores/score.store.ts";
+import Betting from "@/pages/Betting.tsx";
 
 function App() {
-  const [phase, setPhase] = useState<GamePhase>("start");
+  const { phase } = usePhaseStore();
+  const { setBestHand } = useHandStore();
+  const { setCoin } = useScoreStore();
 
-  const goToPoker = () => setPhase("poker");
-  const goToHighLow = () => setPhase("highlow");
-  const restart = () => setPhase("start");
-  const goToResult = () => setPhase("result");
+  useEffect(() => {
+    setCoin(10000);
+  }, []);
+
+  useEffect(() => {
+    if (["start", "poker"].includes(phase)) {
+      setBestHand(null);
+    }
+    if (phase === "start") {
+      setCoin(10000);
+    }
+  }, [phase]);
 
   return (
     <>
@@ -26,18 +36,16 @@ function App() {
             "@container mx-auto flex h-screen max-w-3xl flex-col gap-2 px-[1rem] pb-5"
           }
         >
-          {phase === "start" && <StartScreen onNext={goToPoker} />}
+          {phase === "start" && <StartScreen />}
 
-          {phase !== "start" && (
-            <div className={"flex flex-col gap-2"}>
-              <Header onRetry={restart} />
-              <ScoreSection />
-              <HandRankings />
-            </div>
-          )}
+          <div className={"flex flex-col gap-2"}>
+            {phase !== "start" && <Header />}
+            {!["start", "result"].includes(phase) && <ScoreSection />}
+          </div>
 
-          {phase === "poker" && <Poker onNext={goToHighLow} />}
-          {phase === "highlow" && <HighLow onRetry={restart} />}
+          {phase === "betting" && <Betting />}
+          {phase === "poker" && <Poker />}
+          {phase === "highlow" && <HighLow />}
           {phase === "result" && <ResultScreen />}
         </div>
       </div>

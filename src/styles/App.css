@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+
 @font-face {
     font-family: 'HSBombaram21-Regular';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/HSBombaram21-Regular.woff2') format('woff2');
@@ -18,4 +20,8 @@
 
 .GmarketSans{
     font-family: 'GmarketSansMedium';
+}
+
+.orbitron {
+    font-family: "Orbitron", sans-serif;
 }

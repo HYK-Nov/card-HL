@@ -3,13 +3,17 @@ import { cn } from "@/lib/utils.ts";
 import ActionButton from "@/components/poker/ActionButton.tsx";
 import { usePokerGame } from "@/hooks/poker/usePokerGame.ts";
 import { useScoreStore } from "@/stores/score.store.ts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import HandRankings from "@/components/poker/HandRankings.tsx";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogFooter,
+} from "@/components/ui/alert-dialog.tsx";
+import { usePhaseStore } from "@/stores/state.store.ts";
 
-type Props = {
-  onNext: () => void;
-};
-
-export default function Poker({ onNext }: Props) {
+export default function Poker() {
   const {
     deck,
     result,
@@ -19,15 +23,34 @@ export default function Poker({ onNext }: Props) {
     handleChange,
     handleRetry,
   } = usePokerGame();
-  const { setCoin, setScore } = useScoreStore();
+  const { decCoin, setScore, coin, bet } = useScoreStore();
+  const { setPhase } = usePhaseStore();
+  const [gameOver, setGameOver] = useState(false);
+
+  const handleEnd = () => {
+    setGameOver(false);
+    setPhase("start");
+  };
 
   useEffect(() => {
-    setCoin(3000);
-    setScore(1000);
+    decCoin(bet);
+    setScore(0);
   }, []);
+
+  useEffect(() => {
+    if (
+      result &&
+      coin <= 0 &&
+      ["노페어", "원페어"].includes(result.name) &&
+      isChanged
+    ) {
+      setGameOver(true);
+    }
+  }, [isChanged]);
 
   return (
     <>
+      <HandRankings />
       <div className="flex flex-col gap-4 py-3">
         {/* 결과 출력 */}
         <div
@@ -55,18 +78,31 @@ export default function Poker({ onNext }: Props) {
           </div>
           <div className={"flex justify-center"}>
             {/* 버튼 */}
-            {result && (
+            {result && !gameOver && (
               <ActionButton
                 isChanged={isChanged}
                 result={result.name}
                 handleClick={handleChange}
                 handleRetry={handleRetry}
-                onNext={onNext}
               />
             )}
           </div>
         </div>
       </div>
+
+      {/* GAME OVER */}
+      <AlertDialog open={gameOver}>
+        <AlertDialogContent>
+          <div>
+            <p>게임오버</p>
+          </div>
+          <AlertDialogFooter className={"justify-center"}>
+            <AlertDialogAction onClick={handleEnd} className={"w-full"}>
+              확인
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

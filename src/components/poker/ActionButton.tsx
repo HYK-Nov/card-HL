@@ -1,24 +1,25 @@
+import { usePhaseStore } from "@/stores/state.store.ts";
+
 type Props = {
   isChanged: boolean;
   result: string;
   handleClick: () => void;
   handleRetry: () => void;
-  onNext: () => void;
 };
 
 export default function ActionButton({
   result,
   isChanged,
-  onNext,
   handleRetry,
   handleClick,
 }: Props) {
+  const { setPhase } = usePhaseStore();
   const baseStyle =
     "rounded border-2 border-blue-500 bg-white px-16 py-1 text-xl font-bold text-blue-500 hover:bg-blue-100";
 
   const handleNext = () => {
     if (!isRetry) {
-      onNext();
+      setPhase("highlow");
     }
   };
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils.ts";
 import { parsedCardImages } from "@/components/poker/TrumpCard.tsx";
 
@@ -6,22 +6,31 @@ type Props = {
   value: string;
 };
 
+function usePrevious<T>(value: T) {
+  const ref = useRef<T>();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+}
+
 export default function TrumpCardAnimation({ value }: Props) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [currentValue, setCurrentValue] = useState(value); // 현재 카드 값 저장
 
-  // value가 변경되면 한 번만 카드를 뒤집기
-  useEffect(() => {
-    if (value !== currentValue) {
-      setIsFlipped(true); // value가 변경되면 카드 뒤집기
-      const timer = setTimeout(() => {
-        setCurrentValue(value); // currentValue를 새 value로 업데이트
-        setIsFlipped(false); // 뒤집힌 후에 원래 상태로 돌아오기
-      }, 500); // 500ms 뒤에 원래 상태로 돌아오기
+  const prevValue = usePrevious(value);
 
-      return () => clearTimeout(timer); // 컴포넌트가 unmount될 때 타이머 정리
+  useEffect(() => {
+    if (prevValue !== value) {
+      setIsFlipped(true);
+      const timer = setTimeout(() => {
+        setCurrentValue(value);
+        setIsFlipped(false);
+      }, 500);
+
+      return () => clearTimeout(timer);
     }
-  }, [value, currentValue]); // value가 변경될 때마다 한 번만 뒤집기
+  }, [value, prevValue]);
 
   return (
     <div
@@ -32,7 +41,7 @@ export default function TrumpCardAnimation({ value }: Props) {
     >
       <div
         className={cn(
-          "absolute h-full w-full transition-transform duration-500",
+          "absolute h-full w-full -scale-x-100 transition-transform duration-500",
           "transform-style-preserve-3d", // 3D 효과를 적용하려면 이 속성 필요
           isFlipped ? "rotate-y-180" : "rotate-y-0", // 플립 상태
         )}
@@ -42,6 +51,7 @@ export default function TrumpCardAnimation({ value }: Props) {
           <img
             src={parsedCardImages[currentValue]} // currentValue를 사용하여 카드 이미지 표시
             alt="TrumpCard"
+            draggable="false"
             className="h-full w-full rounded object-cover"
           />
         </div>
@@ -51,6 +61,7 @@ export default function TrumpCardAnimation({ value }: Props) {
           <img
             src={parsedCardImages[currentValue]}
             alt="TrumpCard"
+            draggable="false"
             className="absolute inset-0 h-full w-full object-cover"
           />
         </div>
