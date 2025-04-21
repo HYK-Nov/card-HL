@@ -6,13 +6,14 @@ import { getRandomCards } from "@/lib/poker/pokerLogic.ts";
 
 export const useHighLowGame = () => {
   const { setPhase } = usePhaseStore();
-  const { incScore, score, incCoin } = useScoreStore();
+  const { incScore, score, incCoin, setScore } = useScoreStore();
   const [deck, setDeck] = useState<string[]>([]);
   const [count, setCount] = useState(0);
   const [result, setResult] = useState("0");
   const [isResultVisible, setIsResultVisible] = useState(false);
   const handleRetry = () => {
     setPhase("poker");
+    setScore(0);
   };
 
   const handleHighLow = (mode: "high" | "low") => {
@@ -46,7 +47,8 @@ export const useHighLowGame = () => {
 
   const handleStop = () => {
     incCoin(score);
-    setPhase("result");
+    setPhase("betting");
+    setScore(0);
   };
 
   const handleEnd = () => {

@@ -9,6 +9,7 @@ export const usePokerGame = () => {
   const { setBestHand } = useHandStore();
   const { setScore, decCoin, bet } = useScoreStore();
 
+  const [started, setStarted] = useState(false);
   const [deck, setDeck] = useState<string[]>([]);
   const [result, setResult] = useState<THandRanking>();
   const [isChanged, setIsChanged] = useState(false);
@@ -40,12 +41,14 @@ export const usePokerGame = () => {
     setDeck(getRandomCards());
     setIsChanged(false);
     setBestHand(null);
-    decCoin(1000);
+    decCoin(bet);
   };
 
   useEffect(() => {
-    setDeck(getRandomCards());
-  }, []);
+    if (started) {
+      setDeck(getRandomCards());
+    }
+  }, [started]);
 
   useEffect(() => {
     if (deck.length > 0) {
@@ -65,8 +68,10 @@ export const usePokerGame = () => {
     result,
     isChanged,
     selectedIndices,
+    started,
     toggleSelect,
     handleChange,
     handleRetry,
+    setStarted,
   };
 };

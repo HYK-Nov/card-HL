@@ -39,7 +39,7 @@ export default function HandRankings() {
   return (
     <div
       className={cn(
-        "grid -translate-y-1 grid-cols-2 gap-x-10 gap-y-2 rounded bg-white px-5 py-2 text-wrap",
+        "grid grid-cols-2 gap-x-10 gap-y-2 rounded border bg-white px-5 py-2 text-wrap",
       )}
     >
       <div className="col-span-2 flex justify-center gap-3">

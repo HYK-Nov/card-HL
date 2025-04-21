@@ -1,15 +1,24 @@
 import { useScoreStore } from "@/stores/score.store.ts";
 import { cn } from "@/lib/utils.ts";
 import { usePhaseStore } from "@/stores/state.store.ts";
+import { useSupabaseAuth } from "@/components/common/SupabaseAuthProvider.tsx";
+import { useEffect } from "react";
 
 export default function Betting() {
-  const { coin, setBet } = useScoreStore();
+  const { coin, setBet, setCoin } = useScoreStore();
   const { setPhase } = usePhaseStore();
+  const { session } = useSupabaseAuth();
 
   const handleBetting = (bet: number) => {
     setBet(bet);
     setPhase("poker");
   };
+
+  useEffect(() => {
+    if (!session) {
+      setCoin(10000);
+    }
+  }, []);
 
   return (
     <>
@@ -25,7 +34,7 @@ export default function Betting() {
             onClick={() => handleBetting(100)}
             disabled={coin < 100}
             className={cn(
-              "rounded-full border-5 px-5 py-1",
+              "rounded-full border-5 border-neutral-400 px-5 py-1 text-neutral-400",
               coin >= 100 ? "border-green-400 text-green-400" : "",
             )}
           >
@@ -35,7 +44,7 @@ export default function Betting() {
             disabled={coin < 500}
             onClick={() => handleBetting(500)}
             className={cn(
-              "rounded-full border-5 px-5 py-1",
+              "rounded-full border-5 border-neutral-400 px-5 py-1 text-neutral-400",
               coin >= 500 ? "border-amber-500 text-amber-500" : "",
             )}
           >
@@ -45,7 +54,7 @@ export default function Betting() {
             disabled={coin < 1000}
             onClick={() => handleBetting(1000)}
             className={cn(
-              "rounded-full border-5 px-5 py-1",
+              "rounded-full border-5 border-neutral-400 px-5 py-1 text-neutral-400",
               coin >= 1000 ? "border-red-500 text-red-500" : "",
             )}
           >

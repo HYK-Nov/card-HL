@@ -46,7 +46,7 @@ export default function HighLow() {
               result={result}
               handleHighLow={handleHighLow}
               handleGo={handleGo}
-              handleStop={handleStop}
+              stop={handleStop}
               handleRetry={handleRetry}
               handleEnd={handleEnd}
               handleChangeBet={handleChangeBet}
