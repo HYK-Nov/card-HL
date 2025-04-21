@@ -5,8 +5,8 @@ import { useSupabaseAuth } from "@/components/common/SupabaseAuthProvider.tsx";
 import { useEffect } from "react";
 
 export default function Betting() {
-  const { coin, setBet, setCoin } = useScoreStore();
-  const { setPhase } = usePhaseStore();
+  const { coin, setBet, setCoin, setScore } = useScoreStore();
+  const { setPhase, phase } = usePhaseStore();
   const { session } = useSupabaseAuth();
 
   const handleBetting = (bet: number) => {
@@ -19,6 +19,12 @@ export default function Betting() {
       setCoin(10000);
     }
   }, []);
+
+  useEffect(() => {
+    if (phase === "betting") {
+      setScore(0);
+    }
+  }, [phase]);
 
   return (
     <>

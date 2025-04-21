@@ -48,7 +48,6 @@ export const useHighLowGame = () => {
   const handleStop = () => {
     incCoin(score);
     setPhase("betting");
-    setScore(0);
   };
 
   const handleEnd = () => {

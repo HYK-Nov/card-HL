@@ -27,10 +27,10 @@ export default function ActionButton({
   const buttonBase = "rounded py-1 text-xl transition-colors duration-200";
 
   const handleStop = async () => {
-    stop();
     if (session) {
-      await increaseCoin({ session, score });
+      await increaseCoin(session, coin + score);
     }
+    stop();
   };
 
   if (visible && result === "lose") {

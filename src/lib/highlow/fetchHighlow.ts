@@ -1,14 +1,9 @@
 import { Session } from "@supabase/supabase-js";
 
-type TincreaseCoin = {
-  session: Session;
-  score: number;
-};
-
-export const increaseCoin = async ({
-  session,
-  score,
-}: TincreaseCoin): Promise<number | null> => {
+export const increaseCoin = async (
+  session: Session,
+  coin: number,
+): Promise<number | null> => {
   try {
     const res = await fetch(
       `${import.meta.env.VITE_SUPABASE_FUNCTIONS}/increaseCoin`,
@@ -18,7 +13,7 @@ export const increaseCoin = async ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ totalScore: score }),
+        body: JSON.stringify({ totalScore: coin }),
       },
     );
 

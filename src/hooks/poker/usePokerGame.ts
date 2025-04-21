@@ -7,7 +7,7 @@ import { getBestHand, getRandomCards } from "@/lib/poker/pokerLogic.ts";
 export const usePokerGame = () => {
   const { isEasyMode } = useModeStore();
   const { setBestHand } = useHandStore();
-  const { setScore, decCoin, bet } = useScoreStore();
+  const { setScore, bet } = useScoreStore();
 
   const [started, setStarted] = useState(false);
   const [deck, setDeck] = useState<string[]>([]);
@@ -22,17 +22,17 @@ export const usePokerGame = () => {
   };
 
   const handleChange = () => {
-    let temp = getRandomCards(selectedIndices.length);
-    while (temp.some((card) => deck.includes(card))) {
-      temp = getRandomCards(selectedIndices.length);
+    let newCards = getRandomCards(selectedIndices.length);
+    while (newCards.some((card) => deck.includes(card))) {
+      newCards = getRandomCards(selectedIndices.length);
     }
 
-    const newDeck = [...deck];
-    selectedIndices.forEach((index, i) => {
-      newDeck[index] = temp[i];
+    const updatedDeck = [...deck];
+    selectedIndices.forEach((idx, i) => {
+      updatedDeck[idx] = newCards[i];
     });
 
-    setDeck(newDeck);
+    setDeck(updatedDeck);
     setSelectedIndices([]);
     setIsChanged(true);
   };
@@ -41,7 +41,6 @@ export const usePokerGame = () => {
     setDeck(getRandomCards());
     setIsChanged(false);
     setBestHand(null);
-    decCoin(bet);
   };
 
   useEffect(() => {
@@ -54,6 +53,7 @@ export const usePokerGame = () => {
     if (deck.length > 0) {
       const hand = getBestHand(deck, isEasyMode);
       setResult(hand);
+
       if (isChanged) {
         setBestHand(hand);
         if (!["노페어", "원페어"].includes(hand.name)) {

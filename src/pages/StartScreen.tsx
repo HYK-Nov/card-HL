@@ -4,6 +4,7 @@ import { useSupabaseAuth } from "@/components/common/SupabaseAuthProvider.tsx";
 import googleIcon from "@/assets/images/google.svg";
 import { useEffect, useRef } from "react";
 import { useScoreStore } from "@/stores/score.store.ts";
+import { Link } from "react-router";
 
 export default function StartScreen() {
   const { session, signIn, signOut } = useSupabaseAuth();
@@ -43,10 +44,12 @@ export default function StartScreen() {
     <>
       <div className={"flex h-full flex-col items-center justify-center gap-5"}>
         <div className={"flex w-full justify-between space-x-2"}>
-          <BiSolidTrophy
-            onClick={handleResult}
-            className="size-10 cursor-pointer text-amber-400"
-          />
+          <Link to={"/ranking"}>
+            <BiSolidTrophy
+              onClick={handleResult}
+              className="size-10 cursor-pointer text-amber-400"
+            />
+          </Link>
 
           <BiLogoGithub
             onClick={handleGithub}
@@ -59,14 +62,16 @@ export default function StartScreen() {
         </div>
         {/* 시작 버튼 */}
         <div>
-          <button
-            onClick={handleNext}
-            className={
-              "rounded border-2 border-blue-500 bg-white px-16 py-1 text-xl font-bold text-blue-500 hover:bg-blue-100"
-            }
-          >
-            시작하기
-          </button>
+          <Link to="/game">
+            <button
+              onClick={handleNext}
+              className={
+                "rounded border-2 border-blue-500 bg-white px-16 py-1 text-xl font-bold text-blue-500 hover:bg-blue-100"
+              }
+            >
+              시작하기
+            </button>
+          </Link>
         </div>
         {/* 유틸 버튼 */}
         <div>
