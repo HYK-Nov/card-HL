@@ -24,7 +24,7 @@ export default function Ranking() {
   return (
     <>
       <div className="mb-[100px] flex flex-col">
-        <p className={"py-5 text-center text-3xl font-bold"}>🏆 RANKING 🏆</p>
+        <p className={"py-8 text-center text-3xl font-bold"}>🏆 RANKING 🏆</p>
         <div className="flex h-full flex-col gap-2">
           {loading && (
             <div className="flex h-full w-full items-center justify-center">
