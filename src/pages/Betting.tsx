@@ -4,6 +4,7 @@ import { usePhaseStore } from "@/stores/state.store.ts";
 import { useSupabaseAuth } from "@/components/common/SupabaseAuthProvider.tsx";
 import { useEffect } from "react";
 import { BiSolidRightArrow } from "react-icons/bi";
+import betImg from "@/assets/images/bet_img2.jpg";
 
 const BETTING_OPTIONS = [
   { value: 100, color: "green", minCoin: 100 },
@@ -55,7 +56,7 @@ export default function Betting() {
           >
             <div className={"flex items-center gap-3"}>
               <img
-                src={"src/assets/images/bet_img2.jpg"}
+                src={betImg}
                 className="h-auto w-30 rounded"
                 alt="Betting image"
               />
