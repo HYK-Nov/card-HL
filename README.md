@@ -13,7 +13,6 @@ High Low 카드 게임을 웹에서 즐겨보세요!
 ![Image](https://github.com/user-attachments/assets/bfbb6585-f4dc-43fa-b04f-f9fcbdd9d9b3)
 
 ## 게임 화면
-### 둘레길 경로 지도 연결
 | 포커                                                                                        | 하이로우                                                                                      |
 |-------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
 | ![Image](https://github.com/user-attachments/assets/468c02ec-11d5-4ffe-9275-7a676a262f9f) | ![Image](https://github.com/user-attachments/assets/f286d4be-a29c-4dfa-b9da-8183e6ea505b) |
