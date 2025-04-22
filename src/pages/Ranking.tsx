@@ -54,7 +54,7 @@ export default function Ranking() {
                   <p>
                     {index == 0 && "🥇"}
                     {index == 1 && "🥈"}
-                    {index == 3 && "🥉"}
+                    {index == 2 && "🥉"}
                   </p>
                   <p key={index}>{ranking.total_score}</p>
                 </div>

@@ -22,8 +22,12 @@ export const usePokerGame = () => {
   };
 
   const handleChange = () => {
+    const hasJoker = deck.includes("X1") || deck.includes("X2");
     let newCards = getRandomCards(selectedIndices.length);
-    while (newCards.some((card) => deck.includes(card))) {
+    while (
+      newCards.some((card) => deck.includes(card)) ||
+      (hasJoker && newCards.some((card) => card === "X1" || card === "X2"))
+    ) {
       newCards = getRandomCards(selectedIndices.length);
     }
 
