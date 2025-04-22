@@ -15,9 +15,18 @@ const BETTING_OPTIONS = [
 ];
 
 const getButtonClass = (coin: number, minCoin: number, color: string) => {
+  const base =
+    "rounded border-3 p-2 flex justify-between items-center transition";
+  const disabled = "border-neutral-400 text-neutral-400 cursor-not-allowed";
+  const enabled = {
+    green: "border-green-500 text-green-500 hover:bg-green-100",
+    yellow: "border-yellow-500 text-yellow-500 hover:bg-yellow-100",
+    red: "border-red-500 text-red-500 hover:bg-red-100",
+  };
+
   return cn(
-    "rounded border-3 border-neutral-400 p-2 text-neutral-400 flex justify-between items-center ",
-    coin >= minCoin ? `border-${color}-500 text-${color}-500` : "",
+    base,
+    coin >= minCoin ? enabled[color as keyof typeof enabled] : disabled,
   );
 };
 
