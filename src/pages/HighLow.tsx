@@ -22,7 +22,7 @@ export default function HighLow() {
 
   return (
     <>
-      <div className="flex flex-col gap-[4rem] py-[1rem]">
+      <div className="flex flex-col gap-[3rem] pt-[3rem]">
         {/* 결과 출력 */}
         <div
           className={cn(
@@ -30,20 +30,26 @@ export default function HighLow() {
             !isResultVisible && "invisible",
           )}
         >
-          <p>결과</p>
-          <p className={"text-3xl font-extrabold"}>{`${result} (${count})`}</p>
+          <p
+            className={"GmarketSans text-5xl font-extrabold"}
+          >{`${result.toUpperCase()} (${count})`}</p>
         </div>
 
         {/* 카드 */}
         <div className={"flex flex-col gap-[3rem]"}>
-          <div className="flex justify-center gap-[4rem]">
-            <TrumpCard value={deck[0]} isInteracting={false} />
-            <TrumpCardAnimation key={secondCard} value={secondCard} />
+          <div className="flex justify-center gap-4 px-4 sm:gap-6 md:gap-8">
+            <div className="aspect-[63/88] w-[25vw] max-w-[120px]">
+              <TrumpCard value={deck[0]} isInteracting={false} />
+            </div>
+            <div className="aspect-[63/88] w-[25vw] max-w-[120px]">
+              <TrumpCardAnimation key={secondCard} value={secondCard} />
+            </div>
           </div>
           <div className={"grid grid-cols-2 gap-3"}>
             <ActionButton
               visible={isResultVisible}
               result={result}
+              count={count}
               handleHighLow={handleHighLow}
               handleGo={handleGo}
               stop={handleStop}

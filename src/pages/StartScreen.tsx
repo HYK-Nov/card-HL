@@ -1,10 +1,10 @@
 import { usePhaseStore } from "@/stores/state.store.ts";
-import { BiLogoGithub, BiSolidTrophy } from "react-icons/bi";
 import { useSupabaseAuth } from "@/components/common/SupabaseAuthProvider.tsx";
 import googleIcon from "@/assets/images/google.svg";
 import { useEffect, useRef } from "react";
 import { useScoreStore } from "@/stores/score.store.ts";
 import { Link } from "react-router";
+import StartLinks from "@/components/start/StartLinks.tsx";
 
 export default function StartScreen() {
   const { session, signIn, signOut } = useSupabaseAuth();
@@ -15,11 +15,10 @@ export default function StartScreen() {
   const handleNext = () => {
     setPhase("betting");
   };
-  const handleResult = () => {
-    setPhase("result");
-  };
-  const handleGithub = () => {
-    window.open("https://github.com/HYK-Nov/card-HL", "_blank");
+
+  const handleSignout = () => {
+    signOut();
+    setCoin(0);
   };
 
   useEffect(() => {
@@ -41,21 +40,9 @@ export default function StartScreen() {
 
   // TODO
   return (
-    <>
+    <div className={"h-screen"}>
+      <StartLinks />
       <div className={"flex h-full flex-col items-center justify-center gap-5"}>
-        <div className={"flex w-full justify-between space-x-2"}>
-          <Link to={"/ranking"}>
-            <BiSolidTrophy
-              onClick={handleResult}
-              className="size-10 cursor-pointer text-amber-400"
-            />
-          </Link>
-
-          <BiLogoGithub
-            onClick={handleGithub}
-            className={"size-10 cursor-pointer"}
-          />
-        </div>
         {/* 로고 */}
         <div>
           <p className={"GmarketSans text-6xl font-black"}>CARD HL</p>
@@ -76,7 +63,7 @@ export default function StartScreen() {
         {/* 유틸 버튼 */}
         <div>
           <button
-            onClick={session ? signOut : signIn}
+            onClick={session ? handleSignout : signIn}
             className={
               "flex items-center gap-2.5 rounded-full border px-3 py-2 text-sm text-neutral-500 hover:bg-neutral-100"
             }
@@ -86,6 +73,6 @@ export default function StartScreen() {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

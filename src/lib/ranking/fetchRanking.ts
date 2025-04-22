@@ -1,6 +1,7 @@
 type TRankingResponse = {
-  email: string;
+  name: string;
   total_score: number;
+  picture: string;
 };
 
 export const getRanking = async (): Promise<TRankingResponse[] | null> => {

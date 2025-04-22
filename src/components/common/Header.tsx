@@ -13,7 +13,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex h-[60px] w-full items-center justify-between text-lg">
+    <header className="GmarketSans flex h-[60px] w-full items-center justify-between text-lg">
       <Link to={"/"}>
         <button className={"text-2xl"}>Card HL</button>
       </Link>

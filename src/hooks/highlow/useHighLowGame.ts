@@ -3,6 +3,7 @@ import { useScoreStore } from "@/stores/score.store.ts";
 import { useEffect, useState } from "react";
 import { getWinningCard } from "@/lib/highlow/highlowLogic.ts";
 import { getRandomCards } from "@/lib/poker/pokerLogic.ts";
+import { toast } from "sonner";
 
 export const useHighLowGame = () => {
   const { setPhase } = usePhaseStore();
@@ -25,11 +26,6 @@ export const useHighLowGame = () => {
       if (compareResult === "win") {
         incScore();
         setCount((prev) => prev + 1);
-      } else if (compareResult === "lose") {
-        //   TODO
-      } else {
-        //   DRAW
-        //   TODO
       }
     }
   };
@@ -51,7 +47,8 @@ export const useHighLowGame = () => {
   };
 
   const handleEnd = () => {
-    setPhase("start");
+    setPhase("betting");
+    // navigate("/");
   };
 
   const handleChangeBet = () => {
@@ -64,7 +61,7 @@ export const useHighLowGame = () => {
 
   useEffect(() => {
     if (count == 10) {
-      alert("종료!");
+      toast.success("축하합니다!");
     }
   }, [count]);
 

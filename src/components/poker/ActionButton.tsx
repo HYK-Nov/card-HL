@@ -2,9 +2,11 @@ import { usePhaseStore } from "@/stores/state.store.ts";
 import { useSupabaseAuth } from "@/components/common/SupabaseAuthProvider.tsx";
 import { useScoreStore } from "@/stores/score.store.ts";
 import { decreaseCoin } from "@/lib/poker/fetchPoker.ts";
+import { useNavigate } from "react-router";
 
 type Props = {
   isChanged: boolean;
+  gameOver: boolean;
   result: string;
   retry: () => void;
   handleClick: () => void;
@@ -13,12 +15,14 @@ type Props = {
 export default function ActionButton({
   result,
   isChanged,
+  gameOver,
   retry,
   handleClick,
 }: Props) {
   const { setPhase } = usePhaseStore();
   const { session } = useSupabaseAuth();
   const { bet, setCoin, decCoin } = useScoreStore();
+  const navigate = useNavigate();
   const baseStyle =
     "rounded border-2 border-blue-500 bg-white px-16 py-1 text-xl font-bold text-blue-500 hover:bg-blue-100";
   const isRetry = result === "노페어" || result === "원페어";
@@ -46,6 +50,8 @@ export default function ActionButton({
 
   const onNext = () => setPhase("highlow");
 
+  const onEnd = () => navigate("/");
+
   if (!isChanged) {
     return (
       <button onClick={handleClick} className={baseStyle}>
@@ -55,8 +61,13 @@ export default function ActionButton({
   }
 
   return (
-    <button onClick={isRetry ? onRetry : onNext} className={baseStyle}>
-      {isRetry ? "다시 도전하기" : "다음"}
-    </button>
+    <>
+      <button
+        onClick={gameOver ? onEnd : isRetry ? onRetry : onNext}
+        className={`${baseStyle} `}
+      >
+        {gameOver ? "돌아가기" : isRetry ? "다시 도전하기" : "다음"}
+      </button>
+    </>
   );
 }

@@ -35,7 +35,7 @@ export default function TrumpCardAnimation({ value }: Props) {
   return (
     <div
       className={cn(
-        "group relative aspect-[63/88] w-[128px] cursor-pointer shadow-xl",
+        "group relative aspect-[63/88] w-full max-w-[120px] min-w-[90px] cursor-pointer shadow-xl",
         "perspective-1000", // 퍼스펙티브 추가 (회전 효과를 3D로 보이게 하기 위해)
       )}
     >

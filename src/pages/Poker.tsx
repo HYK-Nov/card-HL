@@ -5,15 +5,9 @@ import { usePokerGame } from "@/hooks/poker/usePokerGame.ts";
 import { useScoreStore } from "@/stores/score.store.ts";
 import { useEffect, useState } from "react";
 import HandRankings from "@/components/poker/HandRankings.tsx";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogFooter,
-} from "@/components/ui/alert-dialog.tsx";
-import { usePhaseStore } from "@/stores/state.store.ts";
 import { useSupabaseAuth } from "@/components/common/SupabaseAuthProvider.tsx";
 import { decreaseCoin } from "@/lib/poker/fetchPoker.ts";
+import { toast } from "sonner";
 
 export default function Poker() {
   const {
@@ -28,7 +22,6 @@ export default function Poker() {
     setStarted,
   } = usePokerGame();
   const { decCoin, coin, bet, setCoin } = useScoreStore();
-  const { setPhase } = usePhaseStore();
   const { session } = useSupabaseAuth();
   const [gameOver, setGameOver] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
@@ -62,17 +55,23 @@ export default function Poker() {
     setStarted(true);
   };
 
-  const handleEnd = () => {
-    setGameOver(false);
-    setPhase("betting");
-  };
-
   // 게임 오버 상태 체크
   useEffect(() => {
-    if (coin - bet < 0) {
+    if (
+      coin - bet < 0 &&
+      isChanged &&
+      result &&
+      ["노페어", "원페어"].includes(result.name)
+    ) {
       setGameOver(true);
     }
-  }, [coin]);
+  }, [coin, isChanged]);
+
+  useEffect(() => {
+    if (gameOver) {
+      toast.error("코인이 부족합니다");
+    }
+  }, [gameOver]);
 
   return (
     <>
@@ -86,21 +85,22 @@ export default function Poker() {
             !isChanged && "invisible",
           )}
         >
-          <p>결과</p>
-          <p className="text-3xl font-extrabold">{result?.name}</p>
+          <p className="text-4xl font-extrabold">{result?.name}</p>
         </div>
 
         {/* 카드 */}
         <div>
           <div className="grid grid-cols-5 gap-3 pb-5">
             {deck.map((item, idx) => (
-              <TrumpCard
-                key={idx}
-                value={item}
-                selected={selectedIndices.includes(idx)}
-                isChanged={isChanged}
-                onClick={() => toggleSelect(idx)}
-              />
+              <div className="aspect-[63/88] w-[15vw] max-w-[120px]">
+                <TrumpCard
+                  key={idx}
+                  value={item}
+                  selected={selectedIndices.includes(idx)}
+                  isChanged={isChanged}
+                  onClick={() => toggleSelect(idx)}
+                />
+              </div>
             ))}
           </div>
 
@@ -113,31 +113,20 @@ export default function Poker() {
               >
                 {isLoading ? "처리 중..." : "게임 시작"}
               </button>
-            ) : result && !gameOver ? (
-              <ActionButton
-                isChanged={isChanged}
-                result={result.name}
-                handleClick={handleChange}
-                retry={handleRetry}
-              />
-            ) : null}
+            ) : (
+              result && (
+                <ActionButton
+                  isChanged={isChanged}
+                  result={result.name}
+                  gameOver={gameOver}
+                  handleClick={handleChange}
+                  retry={handleRetry}
+                />
+              )
+            )}
           </div>
         </div>
       </div>
-
-      {/* GAME OVER */}
-      <AlertDialog open={gameOver}>
-        <AlertDialogContent>
-          <div>
-            <p>코인이 부족합니다</p>
-          </div>
-          <AlertDialogFooter className="justify-center">
-            <AlertDialogAction onClick={handleEnd} className="w-full">
-              확인
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 }

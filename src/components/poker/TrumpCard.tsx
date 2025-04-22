@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils.ts";
+import { MdPublishedWithChanges } from "react-icons/md";
 
 const cardImages = import.meta.glob("@/assets/images/card/*.svg", {
   eager: true,
@@ -31,7 +32,7 @@ export default function TrumpCard({
       <button
         disabled={isChanged}
         className={cn(
-          "group relative aspect-[63/88] w-[128px] overflow-hidden rounded bg-white shadow-xl transition",
+          "group relative aspect-[63/88] w-full max-w-[120px] min-w-[90px] rounded bg-white shadow-lg transition",
           selected ? "-translate-y-3" : "translate-y-0",
         )}
         onClick={onClick}
@@ -50,14 +51,14 @@ export default function TrumpCard({
             isChanged && "cursor-default",
           )}
         />
-        <p
-          className={cn(
-            "absolute inset-0 items-center justify-center text-xl font-bold text-white drop-shadow-[0_3px_3px_rgba(0,0,0,0.6)]",
-            selected ? "flex" : "hidden",
-          )}
-        >
-          CHANGE
-        </p>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <MdPublishedWithChanges
+            className={cn(
+              "size-16 font-bold text-white drop-shadow-[0_0px_3px_rgba(0,0,0,0.6)]",
+              selected ? "block" : "hidden",
+            )}
+          />
+        </div>
       </button>
     </>
   );
