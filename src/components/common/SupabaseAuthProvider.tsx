@@ -10,6 +10,7 @@ type AuthContextType = {
   session: Session | null;
   signIn: () => void;
   signOut: () => void;
+  isLoading: boolean;
 };
 
 const SupabaseAuthContext = createContext<AuthContextType | undefined>(
@@ -22,16 +23,19 @@ export default function SupabaseAuthProvider({
   children: React.ReactNode;
 }) {
   const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setIsLoading(false);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -40,6 +44,9 @@ export default function SupabaseAuthProvider({
   const signIn = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
+      options: {
+        redirectTo: window.location.origin,
+      },
     });
 
     if (error) {
@@ -56,7 +63,9 @@ export default function SupabaseAuthProvider({
   };
 
   return (
-    <SupabaseAuthContext.Provider value={{ session, signIn, signOut }}>
+    <SupabaseAuthContext.Provider
+      value={{ session, signIn, signOut, isLoading }}
+    >
       {children}
     </SupabaseAuthContext.Provider>
   );

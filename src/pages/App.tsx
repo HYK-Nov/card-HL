@@ -18,7 +18,7 @@ function App() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    if (["start", "poker"].includes(phase)) {
+    if (["start", "poker", "betting"].includes(phase)) {
       setBestHand(null);
     }
   }, [phase]);

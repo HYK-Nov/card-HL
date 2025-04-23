@@ -2,7 +2,7 @@ import { useScoreStore } from "@/stores/score.store.ts";
 import { cn } from "@/lib/utils.ts";
 import { usePhaseStore } from "@/stores/state.store.ts";
 import { useSupabaseAuth } from "@/components/common/SupabaseAuthProvider.tsx";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { BiSolidRightArrow } from "react-icons/bi";
 import betImg from "@/assets/images/bet_img2.jpg";
 
@@ -33,7 +33,8 @@ const getButtonClass = (coin: number, minCoin: number, color: string) => {
 export default function Betting() {
   const { coin, setBet, setCoin, setScore } = useScoreStore();
   const { setPhase, phase } = usePhaseStore();
-  const { session } = useSupabaseAuth();
+  const { session, isLoading } = useSupabaseAuth();
+  const hasFetched = useRef(false);
 
   const handleBetting = (bet: number) => {
     setBet(bet);
@@ -41,10 +42,26 @@ export default function Betting() {
   };
 
   useEffect(() => {
-    if (!session && coin === 0) {
+    if (isLoading) return;
+
+    if (session && !hasFetched.current) {
+      hasFetched.current = true;
+
+      fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS}/checkOrCreateScore`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ uid: session.user.id }),
+      })
+        .then((res) => res.json())
+        .then((data) => setCoin(data.total_score));
+    } else if (session === null && coin === 0) {
+      hasFetched.current = true;
       setCoin(10000);
     }
-  }, [session, coin, setCoin]);
+  }, [session, isLoading]);
 
   useEffect(() => {
     if (phase === "betting") {
